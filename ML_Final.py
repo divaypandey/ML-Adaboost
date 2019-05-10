@@ -17,7 +17,9 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 #Import scikit-learn metrics module for accuracy calculation
 from sklearn import metrics
-
+#from sklearn.neighbors import RadiusNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
 from scipy.io import arff
 import pandas as pd
 
@@ -66,20 +68,42 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% t
 
 print("testing for depth 1")
 
-## Model Accuracy, how often is the classifier correct?
+## TEST TRAIN END, ADA BEGIN
 
-lNodes = [1,5,10,100,1000,10000]
-AccAvgs = []
-errorAAvgs = []
-for node in lNodes:
-    estimator = DecisionTreeClassifier(max_depth = 1)
+#lNodes = [1,5,10,100,1000,10000]
+#AccAvgs = []
+#errorAAvgs = []
+#for node in lNodes:
+#    estimator = DecisionTreeClassifier(max_depth = 1)
 #    # Create adaboost classifer object
-    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
+#    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
 #    # Train Adaboost Classifer
-    modelA = abc.fit(X_train, y_train)
+#    modelA = abc.fit(X_train, y_train)
 #    #Predict the response for test dataset
-    y_pred = modelA.predict(X_test)
-    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+#    y_pred = modelA.predict(X_test)
+#    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+
+
+
+############################################################################################################ADA END,  MULTICLASS BEGIN
+
+standardizer = StandardScaler()
+# Standardize features 
+#features_standardized = standardizer.fit_transform(X_train)
+# Train a radius neighbors classifier 
+logistic_regression = LogisticRegression(random_state=0, multi_class="ovr")
+# Train model 
+model = logistic_regression.fit(X_train, y_train)
+
+# Create two observations 
+#new_observations = [[ 1,  1,  1,  1]]
+# Predict the class of two observations 
+y_pred = model.predict(X_test)
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+
+######################################################## MULTICLASS END
+
+
 
 #    #adaboost = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
 #    #modelA = adaboost.fit(normVal,trainDigits)
@@ -220,11 +244,11 @@ for node in lNodes:
 #show()
 
 
-data = arff.loadarff('3year.arff')
-df = pd.DataFrame(data[0])
-df2= pd.DataFrame(data[0])
+#data = arff.loadarff('3year.arff')
+#df = pd.DataFrame(data[0])
+#df2= pd.DataFrame(data[0])
 
-df.head()
-df.drop("class", axis=1, inplace=True)
-print(df)
-print(df.values)
+#df.head()
+#df.drop("class", axis=1, inplace=True)
+#print(df)
+#print(df.values)
