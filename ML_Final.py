@@ -62,36 +62,35 @@ for row in df.values:
     y.append(float(row[-1]))
     X.append(row[:-1])
 
-print(y)
+#print(y)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% training and 30% test
 
-print("testing for depth 1")
-
 ## TEST TRAIN END, ADA BEGIN
 
-#lNodes = [1,5,10,100,1000,10000]
-#AccAvgs = []
-#errorAAvgs = []
-#for node in lNodes:
-#    estimator = DecisionTreeClassifier(max_depth = 1)
+lNodes = [1,5,10,100,1000,10000]
+AccAvgs = []
+errorAAvgs = []
+for node in lNodes:
+    estimator = DecisionTreeClassifier(max_depth = 1)
 #    # Create adaboost classifer object
-#    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
+    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
 #    # Train Adaboost Classifer
-#    modelA = abc.fit(X_train, y_train)
+    modelA = abc.fit(X_train, y_train)
 #    #Predict the response for test dataset
-#    y_pred = modelA.predict(X_test)
-#    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+    y_pred = modelA.predict(X_test)
+    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
 
 
+y_pred = []
 ############################################################################################################ADA END,  MULTICLASS BEGIN
 
 standardizer = StandardScaler()
 # Standardize features 
 #features_standardized = standardizer.fit_transform(X_train)
 # Train a radius neighbors classifier 
-logistic_regression = LogisticRegression(random_state=0, multi_class="ovr")
+logistic_regression = LogisticRegression(random_state=0, multi_class="ovr",max_iter=1000)
 # Train model 
 model = logistic_regression.fit(X_train, y_train)
 
