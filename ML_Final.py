@@ -22,44 +22,21 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from scipy.io import arff
 import pandas as pd
+from sklearn.model_selection import learning_curve, GridSearchCV
+
 from sklearn.utils import shuffle
 np.random.seed(100)
-
-#data = np.loadtxt("iris.data")
-#from sklearn.datasets import load_iris
-
-#iris = load_iris()
-#type(iris) 
-#print (iris.data)
-#iris.data.shape
-
-#print (iris.feature_names)
-#print (iris.target)
-#print (iris.target_names)
-
-####
 
 data = arff.loadarff('3year.arff')
 
 df = pd.DataFrame(data[0])
 df.replace(np.nan, 0, inplace=True)
 df = shuffle(df)
-#df2= pd.DataFrame(data[0])
-
-#df.head()
-#df.drop("class", axis=1, inplace=True)
-#print(df)
-#print(df.values)
 
 ####
 
-#iris = datasets.load_iris()
-X = []#iris.data
-y = []#iris.target
-
-#print(iris.data)
-#print(iris.target)
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% training and 30% test
+X = []
+y = []
 
 for row in df.values:
     y.append(float(row[-1]))
@@ -71,36 +48,49 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% t
 
 ## TEST TRAIN END, ADA BEGIN
 
-#lNodes = [1,5,10,100,1000,10000]
+param_grid = {"base_estimator__criterion" : ["gini", "entropy"], "base_estimator__splitter" : ["best", "random"], "n_estimators": [1, 10, 100]}
+DTC = DecisionTreeClassifier(random_state = None, max_features = "log2", class_weight = "balanced",max_depth = None)
+ABC = AdaBoostClassifier(base_estimator = DTC)
+
+# run grid search
+grid_search_ABC = GridSearchCV(ABC, param_grid=param_grid, scoring = 'roc_auc', cv = 10)
+modelA = grid_search_ABC.fit(X_train, y_train)
+
+print(grid_search_ABC.best_estimator_ ) 
+print(grid_search_ABC.best_params_ ) 
+
+#lNodes = [1,5,10,100]
 #AccAvgs = []
 #errorAAvgs = []
 #for node in lNodes:
-#    estimator = DecisionTreeClassifier(max_depth = 1)
-#    # Create adaboost classifer object
-#    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
-#    # Train Adaboost Classifer
-#    modelA = abc.fit(X_train, y_train)
-#    #Predict the response for test dataset
-#    y_pred = modelA.predict(X_test)
-#    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
-
-
+#estimator = DecisionTreeClassifier(max_depth = 5)
+# Create adaboost classifer object
+#abc = AdaBoostClassifier(base_estimator=estimator)
+# Train Adaboost Classifer
+#Predict the response for test dataset
+y_pred = modelA.predict(X_test)
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+    #errorA = cross_val_score(modelA,X_train,y_train,cv = 10)
+    #errorsinA = [1-x for x in errorA]
+    #AvgError = np.mean(errorsinA)
+    #errorAAvgs.append(AvgError)
+    #AccAvg = np.mean(errorA)
+    #AccAvgs.append(AccAvg)
+#mp.plot(lNodes,AccAvgs,'o')
+#mp.title("Figure 1 - Accuracy")
+#mp.xlabel("# Nodes")
+#mp.ylabel("Accuracy")
+#mp.xscale('log')
+#show()
 
 ############################################################################################################ADA END,  MULTICLASS BEGIN
 
 y_pred = []
 
-standardizer = StandardScaler()
-# Standardize features 
-#features_standardized = standardizer.fit_transform(X_train)
-# Train a radius neighbors classifier 
 logistic_regression = LogisticRegression(random_state=0, multi_class="ovr",max_iter=1000)
 # Train model 
 model = logistic_regression.fit(X_train, y_train)
 
-# Create two observations 
-#new_observations = [[ 1,  1,  1,  1]]
-# Predict the class of two observations 
 y_pred = model.predict(X_test)
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
