@@ -22,7 +22,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from scipy.io import arff
 import pandas as pd
-
+from sklearn.utils import shuffle
+np.random.seed(100)
 
 #data = np.loadtxt("iris.data")
 #from sklearn.datasets import load_iris
@@ -39,9 +40,11 @@ import pandas as pd
 ####
 
 data = arff.loadarff('3year.arff')
+
 df = pd.DataFrame(data[0])
 df.replace(np.nan, 0, inplace=True)
-df2= pd.DataFrame(data[0])
+df = shuffle(df)
+#df2= pd.DataFrame(data[0])
 
 #df.head()
 #df.drop("class", axis=1, inplace=True)
@@ -68,23 +71,24 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% t
 
 ## TEST TRAIN END, ADA BEGIN
 
-lNodes = [1,5,10,100,1000,10000]
-AccAvgs = []
-errorAAvgs = []
-for node in lNodes:
-    estimator = DecisionTreeClassifier(max_depth = 1)
+#lNodes = [1,5,10,100,1000,10000]
+#AccAvgs = []
+#errorAAvgs = []
+#for node in lNodes:
+#    estimator = DecisionTreeClassifier(max_depth = 1)
 #    # Create adaboost classifer object
-    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
+#    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
 #    # Train Adaboost Classifer
-    modelA = abc.fit(X_train, y_train)
+#    modelA = abc.fit(X_train, y_train)
 #    #Predict the response for test dataset
-    y_pred = modelA.predict(X_test)
-    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+#    y_pred = modelA.predict(X_test)
+#    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
 
+
+############################################################################################################ADA END,  MULTICLASS BEGIN
 
 y_pred = []
-############################################################################################################ADA END,  MULTICLASS BEGIN
 
 standardizer = StandardScaler()
 # Standardize features 
@@ -99,6 +103,8 @@ model = logistic_regression.fit(X_train, y_train)
 # Predict the class of two observations 
 y_pred = model.predict(X_test)
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+
+print(model.coef_)
 
 ######################################################## MULTICLASS END
 
