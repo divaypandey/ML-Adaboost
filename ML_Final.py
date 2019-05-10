@@ -56,7 +56,7 @@ ABC = AdaBoostClassifier(base_estimator = DTC)
 grid_search_ABC = GridSearchCV(ABC, param_grid=param_grid, scoring = 'roc_auc', cv = 10)
 modelA = grid_search_ABC.fit(X_train, y_train)
 
-print(grid_search_ABC.best_estimator_ ) 
+print(grid_search_ABC.cv_results_ ) 
 print(grid_search_ABC.best_params_ ) 
 
 #lNodes = [1,5,10,100]
