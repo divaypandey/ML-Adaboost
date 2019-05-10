@@ -30,19 +30,24 @@ np.random.seed(100)
 data = arff.loadarff('3year.arff')
 
 df = pd.DataFrame(data[0])
-df.replace(np.nan, 0, inplace=True)
+df = df.dropna(how='any')
+#df.replace(np.nan, 0, inplace=True)
 df = shuffle(df)
 
+print(df.count)
 ####
 
 X = []
 y = []
-
+rowC= 0
+rowCC = 0
 for row in df.values:
+
+    #print(row)
     y.append(float(row[-1]))
     X.append(row[:-1])
 
-#print(y)
+
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% training and 30% test
 
@@ -96,6 +101,13 @@ print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
 print(model.coef_)
 
+###PRINT?
+
+Prom = []
+Prom.append[X[26]]
+Prom.append[X[50]]
+
+print(Prom)
 ######################################################## MULTICLASS END
 
 
