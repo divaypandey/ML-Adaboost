@@ -34,31 +34,52 @@ import pandas as pd
 #print (iris.target)
 #print (iris.target_names)
 
-iris = datasets.load_iris()
-X = iris.data
-y = iris.target
+####
 
-print(iris.data)
-print(iris.target)
+data = arff.loadarff('3year.arff')
+df = pd.DataFrame(data[0])
+df.replace(np.nan, 0, inplace=True)
+df2= pd.DataFrame(data[0])
+
+#df.head()
+#df.drop("class", axis=1, inplace=True)
+#print(df)
+#print(df.values)
+
+####
+
+#iris = datasets.load_iris()
+X = []#iris.data
+y = []#iris.target
+
+#print(iris.data)
+#print(iris.target)
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% training and 30% test
+
+for row in df.values:
+    y.append(float(row[-1]))
+    X.append(row[:-1])
+
+print(y)
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% training and 30% test
 
-print()
 print("testing for depth 1")
 
 ## Model Accuracy, how often is the classifier correct?
 
-#lNodes = [1,5,10,100,1000,10000]
-#AccAvgs = []
-#errorAAvgs = []
-#for node in lNodes:
-#    estimator = DecisionTreeClassifier(max_depth = 1)
+lNodes = [1,5,10,100,1000,10000]
+AccAvgs = []
+errorAAvgs = []
+for node in lNodes:
+    estimator = DecisionTreeClassifier(max_depth = 1)
 #    # Create adaboost classifer object
-#    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
+    abc = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
 #    # Train Adaboost Classifer
-#    modelA = abc.fit(X_train, y_train)
+    modelA = abc.fit(X_train, y_train)
 #    #Predict the response for test dataset
-#    y_pred = modelA.predict(X_test)
-#    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+    y_pred = modelA.predict(X_test)
+    print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
 #    #adaboost = AdaBoostClassifier(base_estimator=estimator,n_estimators=node)
 #    #modelA = adaboost.fit(normVal,trainDigits)
@@ -206,4 +227,4 @@ df2= pd.DataFrame(data[0])
 df.head()
 df.drop("class", axis=1, inplace=True)
 print(df)
-print(df.dtypes)
+print(df.values)
